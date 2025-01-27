@@ -1,0 +1,295 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Backend Template API",
+      "description": "API documentation for the Quiz App",
+      "contact": {
+        "name": "API Support",
+        "email": "support@example.com"
+      }
+    },
+    "host": "localhost:5000",
+    "basePath": "/api",
+    "tags": [
+      { "name": "users", "description": "User management APIs" }
+    ],
+    "schemes": ["http"],
+    "consumes": ["application/json"],
+    "produces": ["application/json"],
+    "paths": {
+     "/users/": {
+        "post": {
+          "tags": ["users"],
+          "summary": "Create a User",
+          "description": "Endpoint to create a new user.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/CreateUser"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": "User created successfully."
+            },
+            "400": {
+              "description": "Validation error."
+            },
+            "500": {
+              "description": "Internal server error."
+            }
+          }
+        },
+        "get": {
+          "tags": ["users"],
+          "summary": "Get All Users",
+          "description": "Retrieve all users. Admin access required.",
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Authorization",
+              "type": "string",
+              "required": true,
+              "description": "Bearer token for authentication"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "List of users retrieved successfully."
+            },
+            "403": {
+              "description": "Access forbidden. Admin access required."
+            },
+            "500": {
+              "description": "Internal server error."
+            }
+          }
+        }
+      },
+      "/users/login": {
+        "post": {
+          "tags": ["users"],
+          "summary": "User Login",
+          "description": "Authenticate a user and return an access token.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/LoginUser"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Login successful. Access token returned."
+            },
+            "400": {
+              "description": "Validation error."
+            },
+            "401": {
+              "description": "Authentication failed."
+            }
+          }
+        }
+      },
+      "/users/{id}": {
+        "get": {
+          "tags": ["users"],
+          "summary": "Get User by ID",
+          "description": "Retrieve details of a user by their ID.",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "description": "User ID"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "User details retrieved successfully."
+            },
+            "404": {
+              "description": "User not found."
+            },
+            "500": {
+              "description": "Internal server error."
+            }
+          }
+        },
+        "put": {
+          "tags": ["users"],
+          "summary": "Update User",
+          "description": "Update a user's details. User access required.",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "description": "User ID"
+            },
+            {
+              "in": "body",
+              "name": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/UpdateUser"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "User updated successfully."
+            },
+            "400": {
+              "description": "Validation error."
+            },
+            "403": {
+              "description": "Access forbidden."
+            },
+            "404": {
+              "description": "User not found."
+            },
+            "500": {
+              "description": "Internal server error."
+            }
+          }
+        },
+        "delete": {
+          "tags": ["users"],
+          "summary": "Delete User",
+          "description": "Delete a user by their ID. User access required.",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "type": "string",
+              "required": true,
+              "description": "User ID"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "User deleted successfully."
+            },
+            "403": {
+              "description": "Access forbidden."
+            },
+            "404": {
+              "description": "User not found."
+            },
+            "500": {
+              "description": "Internal server error."
+            }
+          }
+        }
+      },
+      "/users/refresh-token": {
+        "post": {
+          "tags": ["users"],
+          "summary": "Refresh Access Token",
+          "description": "Refresh the user's access token.",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "Access token refreshed successfully."
+            },
+            "401": {
+              "description": "Authentication failed."
+            },
+            "500": {
+              "description": "Internal server error."
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+     "CreateUser": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "johndoe@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["USER", "ADMIN"],
+            "example": "USER"
+          },
+          "active": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "LoginUser": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "johndoe@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          }
+        }
+      },
+      "UpdateUser": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Doe Updated"
+          },
+          "email": {
+            "type": "string",
+            "example": "johnupdated@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "newpassword123"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["USER", "ADMIN"],
+            "example": "USER"
+          },
+          "active": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+  
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Error message."
+          }
+        }
+      }
+    }
+  }
