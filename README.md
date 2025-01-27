@@ -43,11 +43,10 @@ src/
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/amitkumar9297/quiz_backend.git
    ```
-
-````
 
 2. Navigate to the project directory:
 
@@ -77,4 +76,3 @@ src/
    ```
 
 ---
-````
