@@ -18,7 +18,7 @@ dotenv.config();
 export const initDB = async (): Promise<boolean> => {
   try {
     
-    const mongodbUri = process.env.MONGODB_URI ?? "mongodb+srv://admin:75way123@cluster0.o8or1.mongodb.net/testing";
+    const mongodbUri = process.env.MONGODB_URI ?? "mongodb+srv://admin:75way123@cluster0.o8or1.mongodb.net/template";
   
 
     if (!mongodbUri) {

@@ -22,8 +22,18 @@ export class UserService {
         const hashedPassword = await bcrypt.hash(data.password, 10);
         const userData = { ...data, password: hashedPassword };
         const user = new User(userData);
-        await user.save();
+        const res=await user.save();
+        const payload: JwtPayload = { 
+            userId: res._id.toString(), // Convert ObjectId to string
+            email: res.email, 
+            role: res.role 
+        };
+        const accessToken = generateAccessToken(payload);
+        const refreshToken = generateRefreshToken(payload);
 
+        await User.findByIdAndUpdate(res._id, {
+            $set: { accessToken, refreshToken }
+        });
 
         return {
             data: {
@@ -34,8 +44,8 @@ export class UserService {
                     password: user.password,
                     role: user.role
                 },
-                accessToken: "",
-                refreshToken: ""
+                accessToken: accessToken,
+                refreshToken: refreshToken
             }
         };
     }

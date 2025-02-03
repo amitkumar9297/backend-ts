@@ -3,6 +3,8 @@ import bodyParser from "body-parser";
 import morgan from "morgan";
 import http from "http";
 import cors from "cors"
+import dotenv from "dotenv";
+dotenv.config();
 
 import { initDB } from "./app/common/services/database.service";
 // import { initPassport } from "./app/common/services/passport-jwt.service";
