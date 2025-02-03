@@ -13,6 +13,21 @@ export interface IUser extends Document {
     resetPasswordExpires?: Date; 
 }
 
+export interface UserResponse {
+    data: {
+      user: {
+        _id: string;
+        name: string;
+        email: string;
+        password: string;
+        role: string;
+      };
+      accessToken: string;
+      refreshToken: string;
+    };
+  }
+  
+
 
 
 const UserSchema = new Schema<IUser>(

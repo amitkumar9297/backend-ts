@@ -39,7 +39,7 @@ export class UserController {
     
         try {
             const token = await userService.loginUser(email, password);
-            res.status(200).json({ token }); // Return token on success
+            res.status(200).json( token ); // Return token on success
         } catch (error) {
             res.status(400).json({ error: "Invalid email or password" }); // Return sanitized error
         }

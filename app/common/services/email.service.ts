@@ -8,14 +8,17 @@ loadConfig();
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
+    user: "sukumar.75way@gmail.com",
+    pass: "mykv wgde xiks ctpm",
   },
 });
 
 export const sendEmail = async (mailOptions: Mail.Options): Promise<any> => {
   try {
-    return await transporter.sendMail(mailOptions);
+      console.log("hello from mail block");
+     const res=await transporter.sendMail(mailOptions);
+     console.log("mail res",res);
+     return res;
   } catch (error: any) {
     createHttpError(500, { message: error.message });
   }

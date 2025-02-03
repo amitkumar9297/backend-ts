@@ -1,10 +1,13 @@
 import bcrypt from "bcrypt"; 
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
-import { User, IUser } from "./user.model";
+import { User, IUser, UserResponse } from "./user.model";
 import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from "./user.dto";
 import { generateAccessToken, generateRefreshToken, JwtPayload } from "../common/helper/token.helper";
 import { sendEmail } from "../common/services/email.service";
+
+import dotenv from "dotenv";
+dotenv.config();
 
 export class UserService {
     
@@ -15,14 +18,26 @@ export class UserService {
      * @returns {Promise<IUser>} The newly created user.
      * @throws {Error} If there is an error during user creation.
      */
-    async createUser(data: CreateUserDTO): Promise<IUser> {
+    async createUser(data: CreateUserDTO): Promise<UserResponse> {
         const hashedPassword = await bcrypt.hash(data.password, 10);
         const userData = { ...data, password: hashedPassword };
         const user = new User(userData);
         await user.save();
 
 
-        return user;
+        return {
+            data: {
+                user: {
+                    _id: user._id.toString(),
+                    name: user.name,
+                    email: user.email,
+                    password: user.password,
+                    role: user.role
+                },
+                accessToken: "",
+                refreshToken: ""
+            }
+        };
     }
 
     
@@ -35,7 +50,7 @@ export class UserService {
      * @returns {Promise<{ accessToken: string; refreshToken: string }>} - An object containing the generated access token and refresh token.
      * @throws {Error} If the email or password is invalid.
      */
-    async loginUser(email: string, password: string): Promise<{ accessToken: string; refreshToken: string; userId: string }> {
+    async loginUser(email: string, password: string): Promise< UserResponse > {
         const user = await User.findOne({ email });
         if (!user) {
             throw new Error("Invalid email or password");
@@ -61,7 +76,19 @@ export class UserService {
             refreshToken,
         });
 
-        return { accessToken, refreshToken, userId: user._id.toString() };
+        return {
+            data: {
+                user: {
+                    _id: user._id.toString(),
+                    name: user.name,
+                    email: user.email,
+                    password: user.password, 
+                    role: user.role,
+                },
+                accessToken,
+                refreshToken,
+            }
+        };
     }
 
     async forgotPassword(email: string): Promise<void> {
@@ -81,13 +108,16 @@ export class UserService {
 
         // Send the reset token via email (replace this with your email service)
         const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}&email=${email}`;
-
+        // console.log(email);
+        console.log(process.env.MAIL_USER)
         const mailOptions = {
             to: email,
             subject: `Reset your password`,
             text: `Send this reset link to the user: ${resetLink}`,
         };
-        await sendEmail(mailOptions);
+        console.log(mailOptions);
+        const res=await sendEmail(mailOptions);
+        console.log("from login side",res);
     }
 
 
